@@ -43,15 +43,6 @@ def key_expansion(key: bytes, nb: int = 4) -> [[[int]]]:
 
   nk = len(key) // 4
 
-  #key_bit_length = len(key) * 8
-
-  #if key_bit_length == 128:
-  #  nr = 10
-  #elif key_bit_length == 192:
-  #  nr = 12
-  #else:  # 256-bit keys
-  #  nr = 14
-
   w = state_from_bytes(key)
 
   for i in range(nk, nb * (nr + 1)):
@@ -115,15 +106,6 @@ def bytes_from_state(state: [[int]]) -> bytes:
 
 
 def aes_encryption(data: bytes, key: bytes) -> bytes:
-
-  #key_bit_length = len(key) * 8
-
-  #if key_bit_length == 128:
-  #  nr = 10
-  #elif key_bit_length == 192:
-  #  nr = 12
-  #else:  # 256-bit keys
-  #  nr = 14
 
   state = state_from_bytes(data)
 
@@ -226,17 +208,6 @@ def inv_mix_columns_optimized(state: [[int]]) -> [[int]]:
 
 def aes_decryption(cipher: bytes, key: bytes) -> bytes:
 
-  #key_byte_length = len(key)
-  #key_bit_length = key_byte_length * 8
-  #nk = key_byte_length // 4
-
-  #if key_bit_length == 128:
-  #  nr = 10
-  #elif key_bit_length == 192:
-  #  nr = 12
-  #else:  # 256-bit keys
-  #  nr = 14
-
   state = state_from_bytes(cipher)
   key_schedule = key_expansion(key)
   add_round_key(state, key_schedule, round=nr)
@@ -272,10 +243,8 @@ if __name__ == "__main__":
   ciphertext = aes_encryption(plaintext, key)
   recovered_plaintext = aes_decryption(ciphertext, key)
 
-  #assert (ciphertext == expected_ciphertext)
   print("Texto Cifrado: ", ciphertext.hex())
   print("Texto Cifrado Esperado (10 rodadas): ", expected_ciphertext.hex())
-  #assert (recovered_plaintext == plaintext)
   print("Texto Simples Recuperado: ", recovered_plaintext.hex())
   print("Texto Simples: ", plaintext.hex())
   if ciphertext == expected_ciphertext and recovered_plaintext == plaintext:
