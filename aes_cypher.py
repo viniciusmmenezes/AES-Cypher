@@ -1,5 +1,6 @@
 global nr
 
+# Implementação da Sbox em Hex
 s_box_string = '63 7c 77 7b f2 6b 6f c5 30 01 67 2b fe d7 ab 76' \
                'ca 82 c9 7d fa 59 47 f0 ad d4 a2 af 9c a4 72 c0' \
                'b7 fd 93 26 36 3f f7 cc 34 a5 e5 f1 71 d8 31 15' \
@@ -38,7 +39,7 @@ def xor_bytes(a: bytes, b: bytes) -> bytes:
 def rot_word(word: [int]) -> [int]:
   return word[1:] + word[:1]
 
-
+# Função para expandir a chave do AES
 def key_expansion(key: bytes, nb: int = 4) -> [[[int]]]:
 
   nk = len(key) // 4
@@ -55,18 +56,18 @@ def key_expansion(key: bytes, nb: int = 4) -> [[[int]]]:
 
   return [w[i * 4:(i + 1) * 4] for i in range(len(w) // 4)]
 
-
+# Função para adicionar a chave de round ao estado
 def add_round_key(state: [[int]], key_schedule: [[[int]]], round: int):
   round_key = key_schedule[round]
   for r in range(len(state)):
     state[r] = [state[r][c] ^ round_key[r][c] for c in range(len(state[0]))]
 
-
+# Função para substituição de bytes no estado
 def sub_bytes(state: [[int]]):
   for r in range(len(state)):
     state[r] = [s_box[state[r][c]] for c in range(len(state[0]))]
 
-
+# Função para fazer shift das linhas no estado
 def shift_rows(state: [[int]]):
   state[0][1], state[1][1], state[2][1], state[3][1] = state[1][1], state[2][
       1], state[3][1], state[0][1]
@@ -81,7 +82,7 @@ def xtime(a: int) -> int:
     return ((a << 1) ^ 0x1b) & 0xff
   return a << 1
 
-
+# Função de mistura
 def mix_column(col: [int]):
   c_0 = col[0]
   all_xor = col[0] ^ col[1] ^ col[2] ^ col[3]
@@ -90,7 +91,7 @@ def mix_column(col: [int]):
   col[2] ^= all_xor ^ xtime(col[2] ^ col[3])
   col[3] ^= all_xor ^ xtime(c_0 ^ col[3])
 
-
+# Função de mistura
 def mix_columns(state: [[int]]):
   for r in state:
     mix_column(r)
@@ -136,7 +137,7 @@ def inv_shift_rows(state: [[int]]) -> [[int]]:
       3], state[2][3], state[3][3]
   return
 
-
+# Implementação da inversa da Sbox em Hex 
 inv_s_box_string = '52 09 6a d5 30 36 a5 38 bf 40 a3 9e 81 f3 d7 fb' \
                    '7c e3 39 82 9b 2f ff 87 34 8e 43 44 c4 de e9 cb' \
                    '54 7b 94 32 a6 c2 23 3d ee 4c 95 0b 42 fa c3 4e' \
